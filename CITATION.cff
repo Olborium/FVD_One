@@ -1,0 +1,8 @@
+message: "If you use this software, please cite it as below."
+authors:
+  - family-names: Shkerin
+    given-names: Andrey
+    orcid: https://orcid.org/1234-5678-9101-1121
+title: "Testing the 3rd order scheme for the Langevin equation"
+version: 0.0.1
+date-released: 2021-08-11
