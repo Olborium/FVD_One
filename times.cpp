@@ -24,7 +24,7 @@ int main(int argc, char* argv[])
 	
 /////////////////////////////////////////////////////
 
-	Evolve sol(eta, 4, 1, -1);
+	Evolve sol(eta, 4, 3, -1);		// for the conservative case use sol(0, 4, 1, -1);
 
 	for(int i = 0; i < N_ENS; i++) {
 
@@ -35,9 +35,9 @@ int main(int argc, char* argv[])
 	}
 	
 	std::random_device rd;
-  int seed = rd();
-	save_data(2, decay_times, "Phi4/times", TEMP, std::abs(seed));
-	save_data(2, osc_counter, "Phi4/osc_counter", TEMP, std::abs(seed));
+    int seed = rd();
+	save_data(2, decay_times, "Phi4/times", TEMP, eta, std::abs(seed));   // Phi4/ftimes for P_{+-} probability
+	save_data(2, osc_counter, "Phi4/osc_counter", TEMP, eta, std::abs(seed));
 
 	return 0;
 }
