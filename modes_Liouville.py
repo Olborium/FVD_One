@@ -86,7 +86,7 @@ print(np.sum(P[:,3]*P[:,3]))
 print(np.sum(P[:,3]*P[:,4]))
 
 #%%
-# Modes array
+""" Save critical bubble, its eigenmodes and eigenvalues """
 
 Modes = np.zeros((N,N+1))
 Modes[:,:-2] = P
@@ -96,10 +96,6 @@ Modes[:,-1] = Sph(x)
 #%%
 
 np.savetxt('modes_Liouville.txt',Modes,fmt='%1.6f')
-
-#%%
-
-np.savetxt('modes_Liouville.txt',P,fmt='%1.6f')
 
 #%%
 
