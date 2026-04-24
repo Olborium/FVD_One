@@ -1,27 +1,22 @@
 #%%
 #import os
 import numpy as np
-#import scipy.special as sp
-#import re
 import matplotlib.pyplot as plt
 from scipy.integrate import solve_bvp
 from scipy.fft import rfft, irfft
 from scipy.sparse import csc_matrix
 from scipy.sparse.linalg import eigsh
-#from scipy.integrate import simps
-#from scipy.optimize import curve_fit
 
 #%%
-
+""" Parameters of the lattice """
 SIZE=100
-N=2048
-
-#TEMP=0.1
+N=4096
 
 DX = SIZE/(N-1)
 x = np.linspace(-SIZE/2,SIZE/2,N)
 
 #%%
+""" Find critical bubble """
 
 def phi_guess(x):
     return np.sqrt(2)/np.cosh(x)
@@ -56,10 +51,8 @@ M2 = np.zeros(N)
 for i in range(N):
     M2[i] = 1.0 - 3.0*Sph(x)[i]**2
 
-# for i in range(N):
-#     M2[i] = 1.0 - 0.3*Sph(x)[i]**2
-
 #%%
+""" Vacuum frequencies """
 Omega02 = np.zeros(N-1)
 for i in np.arange(1,N,1):
     k = 2*np.pi*i/SIZE    
@@ -83,6 +76,7 @@ plt.plot(x,M2)
 plt.show()
 
 #%%
+""" Find eigenmodes and eigenvalues of the critical bubble """
 
 r=np.zeros((3*N))
 c=np.zeros((3*N))
@@ -116,75 +110,18 @@ B = csc_matrix((v,(r,c)),shape=(N,N))
 O2, P = eigsh(B,k=N-1)
 
 #%%
+""" Check orthonormality """
 
-plt.scatter(np.arange(0,N-1,1),O2)
-plt.scatter(np.arange(0,N-1,1),Omega02)
-plt.xlim((0,10))
-plt.ylim((0,1))
-plt.show()
-
-# %%
-
-plt.scatter(np.arange(1,N-1,1),O2[1:]/Omega02[1:])
-#plt.xlim((2000,2046))
-plt.show()
+print(np.sum(P[:,100]*P[:,100]))
+print(np.sum(P[:,100]*P[:,101]))
 
 #%%
-# Negative mode
-
-plt.plot(x,P[:,0])
-plt.plot(x,-0.19*neg_mode(x))
-plt.xlim((-5,5))
-plt.show()
-
-#%%
-# Even modes
-
-plt.plot(x,np.sqrt(N)*P[:,2])
-plt.plot(x,-np.sqrt(2)*np.cos(2*np.pi*x*(2)/2/SIZE))
-#plt.xlim((-50,-49))
-plt.show()
-
-#%%
-
-plt.plot(x,np.sqrt(N)*P[:,400])
-plt.plot(x,np.sqrt(2)*np.cos(2*np.pi*x*(400)/2/SIZE))
-plt.xlim((45,50))
-#plt.xlim((-5,5))
-plt.show()
-
-#%%
-# Odd modes
-
-plt.plot(x,np.sqrt(N)*P[:,3])
-plt.plot(x,np.sqrt(2)*np.sin(2*np.pi*x*1/SIZE))
-plt.show()
-
-
-#%%
-# longest mode
-
-plt.plot(x,np.sqrt(N)*P[:,1])
-plt.plot(x,x**0.0)
-plt.show()
-
-#%%
-# Ortho-normality
-
-print(np.sum(P[:,400]*P[:,400]))
-
-#%%
-# Modes array
+""" Save eigenmodes and eigenvalues (including zero and negative modes) """
 
 Modes = np.zeros((N,N+1))
 Modes[:,:-2] = P
 Modes[:,-2] = zero_mode
 Modes[:,-1] = Sph(x)
-
-#%%
-
-plt.plot(x,Modes[:,-1])
-plt.show()
 
 #%%
 
