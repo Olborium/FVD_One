@@ -36,7 +36,7 @@ int main(int argc, char* argv[])
 	
 	std::random_device rd;
     int seed = rd();
-	save_data(2, decay_times, "Phi4/times", TEMP, eta, std::abs(seed));   // Phi4/ftimes for P_{+-} probability
+	save_data(2, decay_times, "Phi4/times", TEMP, eta, std::abs(seed));   // Phi4/ftimes for P_{+-} (returns to the false vacuum)
 	save_data(2, osc_counter, "Phi4/osc_counter", TEMP, eta, std::abs(seed));
 
 	return 0;
