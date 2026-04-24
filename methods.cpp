@@ -80,8 +80,9 @@ void prepare_excited_sphaleron( std::vector<double*> vars, std::vector<fftw_plan
 		std::uniform_real_distribution<double> uni(std::nextafter(0.0, 1.0), 1.0);
 		double u = uni(gen);
 		double y = -std::sqrt(-2.0 * TEMP / DX * std::log(u));
-		P[0] = -y;
-
+		P[0] = -y; // for P_{-+}, push towards the false vacuum
+//		P[0] = y; // P_{+-}, push towards the true vacuum
+		
 // Positive modes
 		for(int i = 1; i < N_x-1; i++) {
 			std::normal_distribution<double> distr1(0.0, std::sqrt(TEMP/DX/O2[i]));
