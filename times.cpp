@@ -4,11 +4,11 @@ int main(int argc, char* argv[])
 {	
 	SIZE = std::stod(argv[1]);
 	N_x = std::stoi(argv[2]);
-	DT = 0.01;
-	int N_ENS = std::stoi(argv[3]);
-	double eta = std::stod(argv[4]);
-	double TIME_SPAN = std::stod(argv[5]);
-	TEMP = std::stod(argv[6]);
+	DT = std::stod(argv[3]);
+	int N_ENS = std::stoi(argv[4]);
+	double eta = std::stod(argv[5]);
+	double TIME_SPAN = std::stod(argv[6]);
+	TEMP = std::stod(argv[7]);
 	DX = SIZE/N_x;
 	kappa = 0.05;                              // only for Liouville
 
