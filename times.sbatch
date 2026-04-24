@@ -13,10 +13,10 @@
 
 SIZE=100                      # size of the box
 N_x=4096                      # number of lattice points
-DT=0.01                        # timestep
-N_ENS=1000                      # number of realisations
+DT=0.01                       # timestep
+N_ENS=1000                    # number of realisations
 TIME_SPAN=200                # evolution time
 ETA=0.0                      # dissipation coefficient, eta=0 for conservative evolution
-TEMP=0.1                    # temperature
+TEMP=0.1                     # temperature
 
-./times_phi4.out $SIZE $N_x $N_ENS $ETA $TIME_SPAN $TEMP >> out.txt
+./times_phi4.out $SIZE $N_x $DT $N_ENS $ETA $TIME_SPAN $TEMP >> out.txt
