@@ -15,13 +15,13 @@
 #include <stdexcept>
 #include <fftw3.h>
 
-extern double TEMP;             // Temperature in units of lambda*T/m^3	
+extern double TEMP;             // Temperature in units of lambda*T/m^3	for phi4 or T/m for Liouville
 extern double SIZE;             // Size of the box					
 extern double DX;               // Lattice spacing				
 extern int N_x;                 // Number of lattice points; x_{N_x} \equiv x_0; N_x must be power of 2.				
 extern double DT;               // Time step				
 
-extern double kappa;
+extern double kappa;			// for Liouville only
 
 void load_data(std::vector<double>& data, const std::string& name);
 void load_data(std::vector<std::vector<double>>& data, const std::string& name);
@@ -68,7 +68,7 @@ class Evolve : public InitialState {
 
         double e_kin();                          // kinetic energy
         double e_pot();                          // potential energy
-        void ps(std::vector<double>&, int);           // power spectrum
+        void ps(std::vector<double>&, int);      // power spectrum
 };
 
 template <typename... Args>
