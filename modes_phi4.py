@@ -7,6 +7,7 @@ from scipy.sparse.linalg import eigsh
 
 #%%
 """ Parameters of the lattice """
+
 SIZE=100
 N=4096
 
@@ -31,50 +32,39 @@ def Sph(x, guess=phi_guess):
     return solve_bvp(F, bc, x, y, tol=1e-5).sol(x)[0] 
 
 #%%
-# zero mode
+""" Zero mode """
 
 zero_mode = np.gradient(Sph(x),x)
 
-#norm = np.sum(zero_mode**2)
-
-#zero_mode = zero_mode/np.sqrt(norm)
-#%%
-
-def neg_mode(x):
-    return 1.0/np.cosh(x)**2
+# def neg_mode(x):
+#     return 1.0/np.cosh(x)**2
 
 #%%
+# """ Vacuum frequencies """
+
+# Omega02 = np.zeros(N-1)
+# for i in np.arange(1,N,1):
+#     k = 2*np.pi*i/SIZE    
+#     Omega02[i-1] = 2.0/DX/DX*(1.0-np.cos(DX*k)) + 1.0
+# Omega02.sort()
+
+#%%
+
+# plt.plot(x,phi_guess(x))
+# plt.plot(x,Sph(x))
+# plt.plot(x,zero_mode)
+# plt.xlim((-5,5))
+# plt.show()
+
+#%%
+""" Find eigenmodes and eigenvalues of the critical bubble """
+
 M2 = np.zeros(N)
 
 for i in range(N):
     M2[i] = 1.0 - 3.0*Sph(x)[i]**2
 
 #%%
-""" Vacuum frequencies """
-Omega02 = np.zeros(N-1)
-for i in np.arange(1,N,1):
-    k = 2*np.pi*i/SIZE    
-    Omega02[i-1] = 2.0/DX/DX*(1.0-np.cos(DX*k)) + 1.0
-
-#%%
-
-Omega02.sort()
-
-#%%
-
-plt.plot(x,phi_guess(x))
-plt.plot(x,Sph(x))
-plt.plot(x,zero_mode)
-plt.xlim((-5,5))
-plt.show()
-
-#%%
-
-plt.plot(x,M2)
-plt.show()
-
-#%%
-""" Find eigenmodes and eigenvalues of the critical bubble """
 
 r=np.zeros((3*N))
 c=np.zeros((3*N))
@@ -114,7 +104,7 @@ print(np.sum(P[:,100]*P[:,100]))
 print(np.sum(P[:,100]*P[:,101]))
 
 #%%
-""" Save eigenmodes and eigenvalues (including zero and negative modes) """
+""" Save critical bubble, its eigenmodes and eigenvalues """
 
 Modes = np.zeros((N,N+1))
 Modes[:,:-2] = P
