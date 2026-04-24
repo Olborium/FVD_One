@@ -1,9 +1,7 @@
 #%%
-#import os
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy.integrate import solve_bvp
-from scipy.fft import rfft, irfft
 from scipy.sparse import csc_matrix
 from scipy.sparse.linalg import eigsh
 
