@@ -67,21 +67,14 @@ for i in range(M):
     oscs += [np.concatenate(oscs_i_list)]
 
 #%%
+""" Plot the distribution of half-oscillations """
 
 J = 0
-
 oscs_J = oscs[J][times[J]>0] / 4.0
-
-#%%
-
 values, counts = np.unique(oscs_J, return_counts=True)
 abundance = counts / len(oscs_J)
 
 #%%
-""" Make a histogram """
-
-values, counts = np.unique(oscs_J, return_counts=True)
-abundance = counts / len(oscs_J)
 
 fig, ax = plt.subplots(figsize=(6, 4))
 ax.bar(values[0], abundance[0], width=0.4, color='blue', alpha=0.7)
@@ -92,4 +85,38 @@ ax.grid(True, axis='y', linestyle='dashed', linewidth=0.5, color='grey')
 ax.tick_params(axis='both', which='both', right=True, top=True, direction='in', labelsize=12)
 plt.xlim((-0.2,7.2))
 #plt.savefig('Phi4_Nosc_T=0.05.pdf', bbox_inches='tight')
+plt.show()
+
+#%%
+""" Plot the time distribution of turnarounds """
+
+J = 0
+K = len(times[J])
+times_osc = np.zeros(K)
+times_per = np.zeros(K)
+for k in range(K):
+    if oscs[j][k] == 1:
+        times_osc[k] = times[j][k]
+    else:
+        times_per[k] = times[j][k]
+for k in range(K):
+    if times_osc[k] == 0:
+        times_osc[k] = 200
+    if times_per[k] == 0:
+        times_per[k] = 200
+
+#%%
+
+fig, ax = plt.subplots(figsize=(6,4))
+ax.yaxis.grid(True,linestyle='dashed',linewidth=0.5,color='grey')
+ax.xaxis.grid(True,linestyle='dashed',linewidth=0.5,color='grey')
+ax.tick_params(axis='both',which='both',right=True,top=True,direction='in',labelsize=13)
+ax.set_xlabel(r'$mt$',fontsize=18)
+ax.set_ylabel(r'$n$',fontsize=18)
+ax.hist(times_osc,1000,weights=np.ones(J)/len(times[j]),alpha=0.7,color='red')
+ax.hist(times_per,1000,weights=np.ones(J)/len(times[j]),alpha=0.7,color='blue')
+plt.xlim((0,80))
+plt.ylim((1e-4,0.01))
+plt.yscale('log')
+#plt.savefig('Phi4DensityT=0.05.pdf', bbox_inches='tight')
 plt.show()
