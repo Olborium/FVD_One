@@ -12,7 +12,7 @@ double DX;
 double DT;
 int N_x;
 
-double kappa;
+//double kappa; // for Liouville
 
 std::vector<std::vector<double>> A = {{0.5L, 0.5L},
 	{0.291666666666666666666666666667, 0.75L, -0.041666666666666666666666666667},
@@ -67,17 +67,6 @@ void prepare_in_state_RJ( std::vector<double*> vars, std::vector<fftw_plan> fft_
 	}
 }
 
-// double norm_distr(double y, double s) 
-// {
-// 	return 2.0/std::sqrt(2.0*M_PI)*std::exp(-y*y/2.0/s/s);
-// }
-
-// double der_norm_distr(double y, double s)
-// {
-// 	return y/s/s*std::exp(-y*y/2.0/s/s);
-// }
-
-
 void prepare_excited_sphaleron( std::vector<double*> vars, std::vector<fftw_plan> fft_i, std::vector<fftw_plan> fft_f, int sign, std::vector<std::vector<double>>& modes, std::vector<double>& O2, unsigned int seed)
 {
 	if(sign > 0) {std::cerr << "Invalid sign! The in-state is null." << std::endl; } else {
@@ -92,23 +81,6 @@ void prepare_excited_sphaleron( std::vector<double*> vars, std::vector<fftw_plan
 		double u = uni(gen);
 		double y = -std::sqrt(-2.0 * TEMP / DX * std::log(u));
 		P[0] = -y;
-
-		// std::normal_distribution<double> distr_norm(0.0, std::sqrt(TEMP/DX));
-		// std::uniform_real_distribution<double> distr_unif(0.0, 0.1);
-		// bool success = false;
-		// double y;
-		// while(success == false) {
-		// 	y = std::abs(distr_norm(gen));
-		// 	double u = distr_unif(gen);
-		// 	double M = 5.0;
-		// 	if (u < der_norm_distr(y,std::sqrt(TEMP/DX))/M/norm_distr(y,std::sqrt(TEMP/DX)) ) {
-		// 		success = true;
-		// 	}
-		// }
-//		std::normal_distribution<double> distr(0.0, std::sqrt(TEMP/DX));
-
-//		P[0] = -std::abs(distr(gen));	
-//		P[0] = y;
 
 // Positive modes
 		for(int i = 1; i < N_x-1; i++) {
@@ -195,8 +167,8 @@ void evol( 	std::vector<double*> vars, std::vector<fftw_plan> fft_f, std::vector
 		for (int n = 0; n < split_order; n++) {
 	// Kick
 			for (int j = 0; j < N_x; j++) {
-				vars[1][j] = vars[1][j] - A[w][n]*sign*DT*vars[0][j]*vars[0][j]*vars[0][j];
-//				vars[1][j] = vars[1][j] - A[w][n]*sign*DT*kappa*std::exp(vars[0][j]);
+				vars[1][j] = vars[1][j] - A[w][n]*sign*DT*vars[0][j]*vars[0][j]*vars[0][j];			// phi4
+//				vars[1][j] = vars[1][j] - A[w][n]*sign*DT*kappa*std::exp(vars[0][j]);				// Liouville
 			}	
 	// Drift
 			fftw_execute(fft_f[0]);
@@ -217,7 +189,7 @@ void evol( 	std::vector<double*> vars, std::vector<fftw_plan> fft_f, std::vector
 				double Oej = std::sqrt(std::abs(Oj*Oj-eta*eta/4.0));
 				
 				s.d1 = triples[j].d2 - eta*triples[j].d3;
-				s.d2 = triples[j].d1 - eta*triples[j].d2 - (Oj*Oj-eta*eta+3.0*sign*vars0[j]*vars0[j])*triples[j].d3;
+				s.d2 = triples[j].d1 - eta*triples[j].d2 - (Oj*Oj-eta*eta+3.0*sign*vars0[j]*vars0[j])*triples[j].d3;			// only phi4
 
 				double a0 = vars[0][j] - sigma*(eta*s.d1+s.d2)/Oj/Oj;
 				double b0 = (vars[1][j]+eta*vars[0][j]/2)/Oej + sigma*(s.d1-eta*(eta*s.d1+s.d2)/2.0/Oj/Oj)/Oej;
@@ -244,8 +216,8 @@ void evol( 	std::vector<double*> vars, std::vector<fftw_plan> fft_f, std::vector
 		if(sign<0) {
 			if(i%1==0) {
 				for(int j = 0; j < N_x; j++) {
-					if(std::abs(vars[0][j])>5.0) { // 10.0 for Liouville
-//						std::cout << "Decay!!" << std::endl;
+//					if(std::abs(vars[0][j])>10.0) { // Liouville
+					if(std::abs(vars[0][j])>5.0) { // phi4						
 						decay = true;
 						decay_time = i*DT+0.001;
 						break;
@@ -259,7 +231,8 @@ void evol( 	std::vector<double*> vars, std::vector<fftw_plan> fft_f, std::vector
 			for(int j = 0; j < N_x; j++) {
 				if (std::abs(vars[0][j]) > max_val) {max_val = std::abs(vars[0][j]);}
 			}
-			if(max_val < 1.0) {in_fvd = true;} else {in_fvd = false;} // 4.0 for Liouville
+			if(max_val < 1.0) {in_fvd = true;} else {in_fvd = false;} // phi4
+//			if(max_val < 4.0) {in_fvd = true;} else {in_fvd = false;} // Liouville
 			if(in_fvd != in_fvd_prev) {crossing_counter++;}	
 			in_fvd_prev = in_fvd;
 		}
