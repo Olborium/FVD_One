@@ -42,35 +42,29 @@ for i in range(M):
     times_pattern = re.compile(rf'^times_{re.escape(temp_str)}_{re.escape(eta_str)}_(-?\d+)\.txt$')          
     ftimes_pattern = re.compile(rf'^ftimes_{re.escape(temp_str)}_{re.escape(eta_str)}_(-?\d+)\.txt$')           
 
-    ftimes_files = {}
     for filename in files:
-        match = ftimes_pattern.match(filename)
-        if match:
-            ftimes_files[match.group(1)] = filename  
-
-    for filename in sorted(files):
 
         match = times_pattern.match(filename)
         if not match:
             continue
 
-        seed = match.group(1)
-        ftimes_filename = ftimes_files.get(seed)      
-        if ftimes_filename is None:
-            print(f"Missing ftimes_counter file for ETA={eta_str}, seed={seed}")
-            continue          
-
         times_filepath = os.path.join(path, filename)
-        ftimes_filepath = os.path.join(path, ftimes_filename)      
-        
         times_i_list.append(np.loadtxt(times_filepath))
-        ftimes_i_list.append(np.loadtxt(ftimes_filepath))  
+
+     for filename in files:
+
+        match = ftimes_pattern.match(filename)
+        if not match:
+            continue
+
+        ftimes_filepath = os.path.join(path, filename)
+        ftimes_i_list.append(np.loadtxt(ftimes_filepath))       
 
     times += [np.concatenate(times_i_list)]
     ftimes += [np.concatenate(ftimes_i_list)]
 
     decays_tot[i] = np.count_nonzero(times[i])/len(times[i])
-    returns_tot[i] = np.count_nonzero(ftimes[i])/len(ftimes[i])
+    returns_tot[i] = (ftimes[i] == 0).sum()/len(ftimes[i])
 
 #%%
 """ Plot turnarounds, compare with Langer """
